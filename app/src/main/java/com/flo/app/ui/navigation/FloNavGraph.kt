@@ -40,7 +40,10 @@ fun FloNavGraph(
         }
 
         composable(NavRoutes.HOME) {
-            HomeScreen()
+            HomeScreen(
+                onAddTransaction = { navController.navigate(NavRoutes.ADD_TRANSACTION) },
+                onSeeAllTransactions = { navController.navigate(NavRoutes.TRANSACTIONS) }
+            )
         }
 
         composable(NavRoutes.TRANSACTIONS) {
