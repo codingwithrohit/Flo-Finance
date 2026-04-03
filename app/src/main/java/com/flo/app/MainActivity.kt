@@ -2,11 +2,13 @@ package com.flo.app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
@@ -27,13 +29,16 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
+        )
         setContent {
             val isDarkTheme by viewModel.isDarkTheme.collectAsState()
             val isOnboarded by viewModel.isOnboarded.collectAsState()
 
             FloTheme(darkTheme = isDarkTheme) {
-                // Show nothing until we know onboarding state
+
                 if (isOnboarded == null) return@FloTheme
 
                 val startDestination = if (isOnboarded == true)
@@ -41,18 +46,19 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
 
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    Scaffold(
-                        bottomBar = { BottomNavBar(navController) }
-                    ) { paddingValues ->
-                        FloNavGraph(
-                            navController = navController,
-                            startDestination = startDestination,
-                            modifier = Modifier.padding(paddingValues)
-                        )
-                    }
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    bottomBar = { BottomNavBar(navController) },
+                    containerColor = MaterialTheme.colorScheme.background
+                ) { paddingValues ->
+                    FloNavGraph(
+                        navController = navController,
+                        startDestination = startDestination,
+                        modifier = Modifier.padding(paddingValues)
+                    )
                 }
             }
+
         }
     }
 }
