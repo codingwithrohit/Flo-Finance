@@ -20,7 +20,7 @@ val bottomNavItems = listOf(
     BottomNavItem(NavRoutes.HOME, "Home", Icons.Rounded.Home),
     BottomNavItem(NavRoutes.TRANSACTIONS, "Transactions", Icons.AutoMirrored.Rounded.List),
     BottomNavItem(NavRoutes.GOALS, "Goals", Icons.Rounded.Star),
-    BottomNavItem(NavRoutes.INSIGHTS, "Insights", Icons.AutoMirrored.Rounded.List)
+    BottomNavItem(NavRoutes.INSIGHTS, "Insights", Icons.Rounded.Analytics)
 )
 
 @Composable

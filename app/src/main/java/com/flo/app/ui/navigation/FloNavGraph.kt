@@ -42,7 +42,8 @@ fun FloNavGraph(
         composable(NavRoutes.HOME) {
             HomeScreen(
                 onAddTransaction = { navController.navigate(NavRoutes.ADD_TRANSACTION) },
-                onSeeAllTransactions = { navController.navigate(NavRoutes.TRANSACTIONS) }
+                onSeeAllTransactions = { navController.navigate(NavRoutes.TRANSACTIONS) },
+                onSettingsClick = { navController.navigate(NavRoutes.SETTINGS) }
             )
         }
 
@@ -58,7 +59,6 @@ fun FloNavGraph(
         }
 
         composable(NavRoutes.ADD_TRANSACTION) {
-            // Placeholder — will be a bottom sheet later
             Box { }
         }
 

@@ -76,6 +76,9 @@ dependencies {
     // Splash Screen
     implementation(libs.androidx.splashscreen)
 
+    // Icons
+    implementation("androidx.compose.material:material-icons-extended")
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

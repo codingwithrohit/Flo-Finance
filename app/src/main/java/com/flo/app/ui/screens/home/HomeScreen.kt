@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -35,6 +36,7 @@ import java.time.format.DateTimeFormatter
 fun HomeScreen(
     onAddTransaction: () -> Unit = {},
     onSeeAllTransactions: () -> Unit = {},
+    onSettingsClick: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -62,7 +64,10 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Greeting
-                GreetingHeader(userName = state.userName)
+                GreetingHeader(
+                    userName = state.userName,
+                    onSettingsClick = onSettingsClick
+                )
 
                 Spacer(modifier = Modifier.height(32.dp))
 
@@ -127,24 +132,37 @@ fun HomeScreen(
 }
 
 @Composable
-private fun GreetingHeader(userName: String) {
+private fun GreetingHeader(userName: String, onSettingsClick: () -> Unit) {
     val hour = LocalTime.now().hour
     val greeting = when {
         hour < 12 -> "Good morning"
         hour < 17 -> "Good afternoon"
         else      -> "Good evening"
     }
-    Column {
-        Text(
-            text = "$greeting,",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Text(
-            text = userName.ifBlank { "there" } + " 👋",
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column {
+            Text(
+                text = "$greeting,",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = userName.ifBlank { "there" } + " 👋",
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+        IconButton(onClick = onSettingsClick) {
+            Icon(
+                Icons.Rounded.Settings,
+                contentDescription = "Settings",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }
 
