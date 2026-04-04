@@ -2,6 +2,7 @@ package com.flo.app.ui.screens.transactions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.flo.app.data.local.UserPreferences
 import com.flo.app.data.model.Transaction
 import com.flo.app.data.model.TransactionCategory
 import com.flo.app.data.model.TransactionType
@@ -31,7 +32,8 @@ data class TransactionUiState(
 
 @HiltViewModel
 class TransactionViewModel @Inject constructor(
-    private val repository: TransactionRepository
+    private val repository: TransactionRepository,
+    private val userPreferences: UserPreferences
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(TransactionUiState())
@@ -156,5 +158,12 @@ class TransactionViewModel @Inject constructor(
         viewModelScope.launch {
             repository.deleteTransaction(transaction)
         }
+    }
+
+    val swipeHintShown = userPreferences.swipeHintShown
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+
+    fun markSwipeHintShown() {
+        viewModelScope.launch { userPreferences.setSwipeHintShown() }
     }
 }

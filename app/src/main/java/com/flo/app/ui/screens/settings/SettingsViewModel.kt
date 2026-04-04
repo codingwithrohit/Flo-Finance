@@ -2,6 +2,7 @@ package com.flo.app.ui.screens.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.flo.app.data.local.SampleDataSeeder
 import com.flo.app.data.local.UserPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -18,8 +19,12 @@ data class SettingsUiState(
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val userPreferences: UserPreferences
+    private val userPreferences: UserPreferences,
+    private val sampleDataSeeder: SampleDataSeeder
 ) : ViewModel() {
+
+    private val _snackbarMessage = MutableStateFlow<String?>(null)
+    val snackbarMessage = _snackbarMessage.asStateFlow()
 
     val state: StateFlow<SettingsUiState> = combine(
         userPreferences.userName,
@@ -60,4 +65,22 @@ class SettingsViewModel @Inject constructor(
             userPreferences.saveMonthlyBudget(budget.toDoubleOrNull() ?: 0.0)
         }
     }
+
+    fun loadSampleData() {
+        viewModelScope.launch {
+            _snackbarMessage.value = null
+            sampleDataSeeder.seedSampleData()
+            _snackbarMessage.value = "✅ Sample data loaded successfully"
+        }
+    }
+
+    fun clearSampleData() {
+        viewModelScope.launch {
+            _snackbarMessage.value = null
+            sampleDataSeeder.clearSampleData()
+            _snackbarMessage.value = "🗑️ All data cleared"
+        }
+    }
+
+    fun snackbarShown() { _snackbarMessage.value = null }
 }

@@ -27,16 +27,17 @@ val bottomNavItems = listOf(
 fun BottomNavBar(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val currentBaseRoute = currentRoute?.substringBefore("?")
 
-    // Don't show bottom bar on onboarding
-    if (currentRoute == NavRoutes.ONBOARDING) return
+    if (currentBaseRoute == NavRoutes.ONBOARDING ||
+        currentBaseRoute == NavRoutes.SETTINGS) return
 
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.surface
     ) {
         bottomNavItems.forEach { item ->
             NavigationBarItem(
-                selected = currentRoute == item.route,
+                selected = currentBaseRoute == item.route,
                 onClick = {
                     navController.navigate(item.route) {
                         popUpTo(NavRoutes.HOME) { saveState = true }
@@ -47,7 +48,9 @@ fun BottomNavBar(navController: NavController) {
                 icon = {
                     Icon(imageVector = item.icon, contentDescription = item.label)
                 },
-                label = { Text(item.label, style = MaterialTheme.typography.labelMedium) },
+                label = {
+                    Text(item.label, style = MaterialTheme.typography.labelMedium)
+                },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary,
                     selectedTextColor = MaterialTheme.colorScheme.primary,

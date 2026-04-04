@@ -35,12 +35,17 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionsScreen(
+    autoOpenSheet: Boolean = false,
     onAddTransaction: () -> Unit = {},
     onEditTransaction: (Long) -> Unit = {},
     viewModel: TransactionViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    LaunchedEffect(autoOpenSheet) {
+        if (autoOpenSheet) viewModel.openAddSheet()
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -70,6 +75,46 @@ fun TransactionsScreen(
                 selectedFilter = state.selectedFilter,
                 onFilterSelect = viewModel::onFilterSelect
             )
+
+            // Swipe hint
+            val swipeHintShown by viewModel.swipeHintShown.collectAsState()
+            var showHint by remember { mutableStateOf(false) }
+
+            LaunchedEffect(swipeHintShown) {
+                if (!swipeHintShown) {
+                    showHint = true
+                    kotlinx.coroutines.delay(3000)
+                    showHint = false
+                    viewModel.markSwipeHintShown()
+                }
+            }
+
+            AnimatedVisibility(
+                visible = showHint,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.Rounded.SwipeLeft,
+                        contentDescription = null,
+                        tint = Primary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "Swipe left on a transaction to delete",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Primary
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 

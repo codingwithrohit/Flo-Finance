@@ -25,6 +25,7 @@ class UserPreferences @Inject constructor(
         val IS_ONBOARDED = booleanPreferencesKey("is_onboarded")
         val IS_DARK_THEME = booleanPreferencesKey("is_dark_theme")
         val CURRENCY_SYMBOL = stringPreferencesKey("currency_symbol")
+        val KEY_SWIPE_HINT_SHOWN = booleanPreferencesKey("swipe_hint_shown")
     }
 
     val userName: Flow<String> = dataStore.data.map { it[USER_NAME] ?: "" }
@@ -33,6 +34,7 @@ class UserPreferences @Inject constructor(
     val isOnboarded: Flow<Boolean> = dataStore.data.map { it[IS_ONBOARDED] ?: false }
     val isDarkTheme: Flow<Boolean> = dataStore.data.map { it[IS_DARK_THEME] ?: true }
     val currencySymbol: Flow<String> = dataStore.data.map { it[CURRENCY_SYMBOL] ?: "₹" }
+    val swipeHintShown: Flow<Boolean> = dataStore.data.map { it[KEY_SWIPE_HINT_SHOWN] ?: false }
 
     suspend fun saveUserName(name: String) {
         dataStore.edit { it[USER_NAME] = name }
@@ -56,5 +58,8 @@ class UserPreferences @Inject constructor(
 
     suspend fun saveCurrencySymbol(symbol: String) {
         dataStore.edit { it[CURRENCY_SYMBOL] = symbol }
+    }
+    suspend fun setSwipeHintShown() {
+        dataStore.edit { it[KEY_SWIPE_HINT_SHOWN] = true }
     }
 }
