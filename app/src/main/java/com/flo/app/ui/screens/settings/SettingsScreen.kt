@@ -21,6 +21,7 @@ import com.flo.app.ui.theme.Primary
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
+    snackbarHostState: SnackbarHostState,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -28,7 +29,7 @@ fun SettingsScreen(
     var showIncomeDialog by remember { mutableStateOf(false) }
     var showBudgetDialog by remember { mutableStateOf(false) }
     val snackbarMessage by viewModel.snackbarMessage.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
+
 
     LaunchedEffect(snackbarMessage) {
         snackbarMessage?.let {
@@ -37,183 +38,170 @@ fun SettingsScreen(
         }
     }
 
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(snackbarHostState) { data ->
-                Snackbar(
-                    snackbarData = data,
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.onBackground,
-                    actionColor = Primary
-                )
-            }
-        },
-        containerColor = MaterialTheme.colorScheme.background
-    ) { padding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
-                .padding(horizontal = 20.dp)
-        ) {
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp)
+
+    ) {
 
 
-            Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
-            // Profile section
-            SectionLabel("Profile")
-            FloCard(modifier = Modifier.fillMaxWidth()) {
-                SettingsRow(
-                    icon = Icons.Rounded.Person,
-                    label = "Name",
-                    value = state.userName.ifBlank { "Not set" },
-                    onClick = { showNameDialog = true }
-                )
-                HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
-                SettingsRow(
-                    icon = Icons.Rounded.Wallet,
-                    label = "Monthly Income",
-                    value = if (state.monthlyIncome.isNotBlank()) "₹${state.monthlyIncome}" else "Not set",
-                    onClick = { showIncomeDialog = true }
-                )
-                HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
-                SettingsRow(
-                    icon = Icons.Rounded.PieChart,
-                    label = "Monthly Budget",
-                    value = if (state.monthlyBudget.isNotBlank()) "₹${state.monthlyBudget}" else "Not set",
-                    onClick = { showBudgetDialog = true }
-                )
-            }
+        // Profile section
+        SectionLabel("Profile")
+        FloCard(modifier = Modifier.fillMaxWidth()) {
+            SettingsRow(
+                icon = Icons.Rounded.Person,
+                label = "Name",
+                value = state.userName.ifBlank { "Not set" },
+                onClick = { showNameDialog = true }
+            )
+            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+            SettingsRow(
+                icon = Icons.Rounded.Wallet,
+                label = "Monthly Income",
+                value = if (state.monthlyIncome.isNotBlank()) "₹${state.monthlyIncome}" else "Not set",
+                onClick = { showIncomeDialog = true }
+            )
+            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+            SettingsRow(
+                icon = Icons.Rounded.PieChart,
+                label = "Monthly Budget",
+                value = if (state.monthlyBudget.isNotBlank()) "₹${state.monthlyBudget}" else "Not set",
+                onClick = { showBudgetDialog = true }
+            )
+        }
 
-            Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
-            // Appearance section
-            SectionLabel("Appearance")
-            FloCard(modifier = Modifier.fillMaxWidth()) {
+        // Appearance section
+        SectionLabel("Appearance")
+        FloCard(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Icon(
-                            Icons.Rounded.DarkMode,
-                            contentDescription = null,
-                            tint = Primary
-                        )
-                        Text(
-                            "Dark Mode",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                    }
-                    Switch(
-                        checked = state.isDarkTheme,
-                        onCheckedChange = viewModel::toggleTheme,
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = MaterialTheme.colorScheme.background,
-                            checkedTrackColor = Primary
-                        )
+                    Icon(
+                        Icons.Rounded.DarkMode,
+                        contentDescription = null,
+                        tint = Primary
                     )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // About section
-            SectionLabel("About")
-            FloCard(modifier = Modifier.fillMaxWidth()) {
-                SettingsInfoRow(label = "Version", value = "1.0.0")
-                HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
-                SettingsInfoRow(label = "Built with", value = "Kotlin + Jetpack Compose")
-                HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
-                SettingsInfoRow(label = "Architecture", value = "MVVM + Clean Architecture")
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            SectionLabel("Developer")
-
-            FloCard(modifier = Modifier.fillMaxWidth()) {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text(
-                        text = "Load sample data to see the app with realistic transactions, charts, and insights already populated.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        "Dark Mode",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onBackground
                     )
-                    Button(
-                        onClick = viewModel::loadSampleData,
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Primary,
-                            contentColor = androidx.compose.ui.graphics.Color.Black
-                        )
-                    ) {
-                        Text("Load Sample Data", style = MaterialTheme.typography.titleMedium)
-                    }
-                    OutlinedButton(
-                        onClick = viewModel::clearSampleData,
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Expense),
-                        border = androidx.compose.foundation.BorderStroke(1.dp, Expense)
-                    ) {
-                        Text("Clear All Data", style = MaterialTheme.typography.titleMedium)
-                    }
+                }
+                Switch(
+                    checked = state.isDarkTheme,
+                    onCheckedChange = viewModel::toggleTheme,
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = MaterialTheme.colorScheme.background,
+                        checkedTrackColor = Primary
+                    )
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // About section
+        SectionLabel("About")
+        FloCard(modifier = Modifier.fillMaxWidth()) {
+            SettingsInfoRow(label = "Version", value = "1.0.0")
+            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+            SettingsInfoRow(label = "Built with", value = "Kotlin + Jetpack Compose")
+            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+            SettingsInfoRow(label = "Architecture", value = "MVVM + Clean Architecture")
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        SectionLabel("Developer")
+
+        FloCard(modifier = Modifier.fillMaxWidth()) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(
+                    text = "Load sample data to see the app with realistic transactions, charts, and insights already populated.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Button(
+                    onClick = viewModel::loadSampleData,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Primary,
+                        contentColor = androidx.compose.ui.graphics.Color.Black
+                    )
+                ) {
+                    Text("Load Sample Data", style = MaterialTheme.typography.titleMedium)
+                }
+                OutlinedButton(
+                    onClick = viewModel::clearSampleData,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Expense),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, Expense)
+                ) {
+                    Text("Clear All Data", style = MaterialTheme.typography.titleMedium)
                 }
             }
-
-            Spacer(modifier = Modifier.height(100.dp))
         }
 
-        // Dialogs
-        if (showNameDialog) {
-            EditDialog(
-                title = "Edit Name",
-                currentValue = state.userName,
-                placeholder = "Your name",
-                onConfirm = {
-                    viewModel.saveName(it)
-                    showNameDialog = false
-                },
-                onDismiss = { showNameDialog = false }
-            )
-        }
+        Spacer(modifier = Modifier.height(40.dp))
+    }
 
-        if (showIncomeDialog) {
-            EditDialog(
-                title = "Monthly Income",
-                currentValue = state.monthlyIncome,
-                placeholder = "Amount in ₹",
-                isNumeric = true,
-                onConfirm = {
-                    viewModel.saveIncome(it)
-                    showIncomeDialog = false
-                },
-                onDismiss = { showIncomeDialog = false }
-            )
-        }
+    // Dialogs
+    if (showNameDialog) {
+        EditDialog(
+            title = "Edit Name",
+            currentValue = state.userName,
+            placeholder = "Your name",
+            onConfirm = {
+                viewModel.saveName(it)
+                showNameDialog = false
+            },
+            onDismiss = { showNameDialog = false }
+        )
+    }
 
-        if (showBudgetDialog) {
-            EditDialog(
-                title = "Monthly Budget",
-                currentValue = state.monthlyBudget,
-                placeholder = "Amount in ₹",
-                isNumeric = true,
-                onConfirm = {
-                    viewModel.saveBudget(it)
-                    showBudgetDialog = false
-                },
-                onDismiss = { showBudgetDialog = false }
-            )
-        }
+    if (showIncomeDialog) {
+        EditDialog(
+            title = "Monthly Income",
+            currentValue = state.monthlyIncome,
+            placeholder = "Amount in ₹",
+            isNumeric = true,
+            onConfirm = {
+                viewModel.saveIncome(it)
+                showIncomeDialog = false
+            },
+            onDismiss = { showIncomeDialog = false }
+        )
+    }
+
+    if (showBudgetDialog) {
+        EditDialog(
+            title = "Monthly Budget",
+            currentValue = state.monthlyBudget,
+            placeholder = "Amount in ₹",
+            isNumeric = true,
+            onConfirm = {
+                viewModel.saveBudget(it)
+                showBudgetDialog = false
+            },
+            onDismiss = { showBudgetDialog = false }
+        )
     }
 
 

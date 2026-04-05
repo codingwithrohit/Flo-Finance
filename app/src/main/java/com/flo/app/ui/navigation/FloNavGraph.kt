@@ -1,6 +1,7 @@
 package com.flo.app.ui.navigation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
@@ -10,6 +11,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButtonDefaults.Icon
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -17,7 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -30,6 +36,7 @@ import com.flo.app.ui.screens.insights.InsightsScreen
 import com.flo.app.ui.screens.onboarding.OnboardingScreen
 import com.flo.app.ui.screens.settings.SettingsScreen
 import com.flo.app.ui.screens.transactions.TransactionsScreen
+import com.flo.app.ui.theme.Primary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -125,9 +132,21 @@ fun FloNavGraph(
         }
 
         composable(NavRoutes.SETTINGS) {
+            val snackbarHostState = remember { SnackbarHostState() }
             Scaffold(
+                snackbarHost = {
+                    SnackbarHost(snackbarHostState) { data ->
+                    Snackbar(
+                        snackbarData = data,
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.onBackground,
+                        actionColor = Primary
+                    )
+                }
+            },
                 topBar = {
                     TopAppBar(
+                        windowInsets = WindowInsets(0, 0, 0, 0),
                         title = {
                             Text(
                                 "Settings",
@@ -152,7 +171,9 @@ fun FloNavGraph(
                 containerColor = MaterialTheme.colorScheme.background
             ) { padding ->
                 SettingsScreen(
-                    modifier = Modifier.padding(padding)
+                    modifier = Modifier.padding(padding),
+                    snackbarHostState = snackbarHostState,
+                    viewModel = hiltViewModel()
                 )
             }
         }
