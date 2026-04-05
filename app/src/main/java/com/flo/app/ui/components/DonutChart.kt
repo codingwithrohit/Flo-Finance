@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.flo.app.data.model.CategorySpending
@@ -120,35 +121,63 @@ fun DonutChart(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.weight(1f)
         ) {
+//            categories.take(5).forEachIndexed { index, category ->
+//                Row(
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+//                ) {
+//                    Box(
+//                        modifier = Modifier
+//                            .size(10.dp)
+//                            .let {
+//                                it.then(
+//                                    Modifier.padding(0.dp)
+//                                )
+//                            }
+//                    ) {
+//                        Canvas(modifier = Modifier.fillMaxSize()) {
+//                            drawCircle(color = chartColors[index % chartColors.size])
+//                        }
+//                    }
+//                    Text(
+//                        text = category.category,
+//                        style = MaterialTheme.typography.labelLarge,
+//                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+//                        modifier = Modifier.weight(1f)
+//                    )
+//                    Text(
+//                        text = "${category.percentage.toInt()}%",
+//                        style = MaterialTheme.typography.labelLarge,
+//                        color = chartColors[index % chartColors.size],
+//                        fontWeight = FontWeight.Bold
+//                    )
+//                }
+//            }
             categories.take(5).forEachIndexed { index, category ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(10.dp)
-                            .let {
-                                it.then(
-                                    Modifier.padding(0.dp)
-                                )
-                            }
-                    ) {
+                    Box(modifier = Modifier.size(8.dp)) {
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             drawCircle(color = chartColors[index % chartColors.size])
                         }
                     }
                     Text(
                         text = category.category,
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = "${category.percentage.toInt()}%",
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.labelMedium,
                         color = chartColors[index % chartColors.size],
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1
                     )
                 }
             }
