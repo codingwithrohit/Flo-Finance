@@ -8,9 +8,24 @@ Built as part of the Zorvyn Mobile App Developer Intern assignment.
 
 ## 📱 Demo
 
-
+| | Link |
+|---|---|
+| 📹 Demo Video | [Watch Demo](https://drive.google.com/file/d/13duT-T2DqJlGy05V5RPyyiAEVsJHBu52/view?usp=sharing) |
+| 📦 Download APK | [Download](https://drive.google.com/file/d/1GusfQnKVmiS1P5RrpSJrm7l-xmUfIqSe/view?usp=sharing) |
 
 ---
+
+## 📸 Screenshots
+
+<p align="center">
+  <img src="screenshots/home.jpeg" width="200" alt="Home"/>
+  <img src="screenshots/transaction.jpeg" width="200" alt="Transactions"/>
+  <img src="screenshots/insight1.jpeg" width="200" alt="Insights"/>
+  <img src="screenshots/insight2.jpeg" width="200" alt="Insights"/>
+  <img src="screenshots/goal.jpeg" width="200" alt="Goals"/>
+   <img src="screenshots/transaction_light.jpeg" width="200" alt="Light Mode"/>
+</p>
+
 
 ## ✨ What Makes Flo Different
 
